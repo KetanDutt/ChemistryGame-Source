@@ -5,7 +5,7 @@ import { GamePlayView } from "./js/Views/GamePlayView";
 
 var game = new Phaser.Game({
     type: Phaser.AUTO,
-    backgroundColor: 0x000000,
+    backgroundColor: 0x111111,
     scene: [SplashView, MenuView, GamePlayView],
     scale: {
         mode: Phaser.Scale.ScaleModes.RESIZE,

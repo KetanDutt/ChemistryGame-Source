@@ -27,7 +27,7 @@ export const Utilities = {
         py = ynew + cy;
         return { x: px, y: py };
     },
-    intersections: function(c1, c2) {
+    intersectionsBetweenCircles: function(c1, c2) {
         let p0 = new Phaser.Math.Vector2(c1.x, c1.y)
         let p1 = new Phaser.Math.Vector2(c2.x, c2.y)
         let d = p0.distance(p1);
