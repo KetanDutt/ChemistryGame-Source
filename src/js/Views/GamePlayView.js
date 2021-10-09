@@ -45,7 +45,7 @@ export class GamePlayView extends Phaser.Scene {
                     if (nearestArc.dist < 20) {
                         let angle = Phaser.Math.Angle.BetweenPoints(atom, pointer)
                         if (Math.abs(nearestArc.arc.obj.angle - Phaser.Math.RadToDeg(angle)) < .05) {
-                            atom.seperateArc(nearestArc.arc)
+                            // atom.seperateArc(nearestArc.arc)
                         } else {
                             let lowestAngle = getlowestAngleBetweenArcs(atom, nearestArc.arc, angle)
                             if (lowestAngle.angle > 60) {
