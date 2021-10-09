@@ -35,7 +35,7 @@ export class SplashView extends Phaser.Scene {
         this.add.text(screenWidth / 2, screenHeight * .8, 'Chemistry Game by Ketan Dutt', Utilities.textStyle).setOrigin(0.5)
 
         this.time.delayedCall(3000, () => {
-            this.scene.start(Constants.GamePlayView)
+            this.scene.start(Constants.MenuView)
         });
     }
 }
