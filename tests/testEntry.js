@@ -92,4 +92,12 @@ test("textStyle() returns independent objects (no shared-style mutation bug)", (
     ok(b.fontSize !== 99, "mutating one style leaked into another");
 });
 
+test("distance(), angleBetween(), clamp() and ringAngles() compute expected values", () => {
+    eq(Utilities.distance(0, 0, 3, 4), 5);
+    eq(Utilities.clamp(15, 0, 10), 10);
+    eq(Utilities.clamp(-5, 0, 10), 0);
+    eq(Utilities.angleBetween(0, 0, 1, 0), 0);
+    eq(Utilities.ringAngles(4).length, 4);
+});
+
 window.__TEST_RESULTS__ = results;

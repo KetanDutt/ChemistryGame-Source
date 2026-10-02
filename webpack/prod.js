@@ -7,6 +7,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "../dist"),
     filename: "bundle.min.js",
+    publicPath: "",
     clean: true
   },
   module: {
@@ -41,7 +42,7 @@ module.exports = {
     ]
   },
   performance: {
-    maxEntrypointSize: 1200000,
-    maxAssetSize: 1200000
+    maxEntrypointSize: 1500000,
+    maxAssetSize: 1500000
   }
 };

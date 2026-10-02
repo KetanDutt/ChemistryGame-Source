@@ -1,5 +1,3 @@
-import Phaser from "phaser";
-
 // Small pure helpers shared across the game. Everything here is side-effect
 // free; in particular `textStyle` returns a *fresh* object on every call so
 // callers can never mutate a shared style (an actual bug in the original
@@ -19,11 +17,11 @@ export const Utilities = {
     },
 
     distance(x1, y1, x2, y2) {
-        return Phaser.Math.Distance.Between(x1, y1, x2, y2);
+        return Math.hypot(x2 - x1, y2 - y1);
     },
 
     angleBetween(x1, y1, x2, y2) {
-        return Phaser.Math.Angle.Between(x1, y1, x2, y2);
+        return Math.atan2(y2 - y1, x2 - x1);
     },
 
     // Intersection points of two circles; used to draw the electron "arc"

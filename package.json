@@ -6,7 +6,9 @@
   "scripts": {
     "start": "webpack serve --config webpack/base.js",
     "build": "webpack --config webpack/prod.js",
-    "test": "node tests/run.js"
+    "test": "node tests/run.js",
+    "deploy": "node scripts/deploy.js",
+    "deploy:dry": "node scripts/deploy.js --dry-run"
   },
   "repository": {
     "type": "git",
@@ -26,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/KetanDutt/ChemistryGame-Source/issues"
   },
-  "homepage": "https://github.com/KetanDutt/ChemistryGame-Source#readme",
+  "homepage": "https://ketandutt.github.io/ChemistryGame-Source/",
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.0",

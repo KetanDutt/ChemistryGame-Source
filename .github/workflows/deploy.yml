@@ -1,0 +1,57 @@
+name: Build & Publish to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Target branch to push the compiled build to"
+        required: false
+        default: "gh-pages"
+        type: string
+      cname:
+        description: "Optional custom domain (CNAME) for GitHub Pages"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "github-pages-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build-and-publish:
+    name: Build, Push Branch & Publish Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run headless test suite
+        run: npm test
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Push build to branch and publish to GitHub Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_BRANCH: ${{ inputs.branch || 'gh-pages' }}
+          CNAME: ${{ inputs.cname || '' }}
+        run: node scripts/deploy.js --skip-build
