@@ -19,7 +19,7 @@ original `RESIZE` mode, which left every object stranded on window changes.
 | `Constants.js` | Single source of truth: logical size, element table (radius, colour, valence), layout bands, bond tuning, storage key. |
 | `Levels.js` | Declarative level campaign: atom list + bond list `[a, b, order]`. Pure data. |
 | `Chem.js` | **Pure** chemistry graph logic: connected components, canonical molecule signatures, target matching, level validation, preview layout. No Phaser import → trivially testable. |
-| `Utilities.js` | Pure helpers (`textStyle` factory, clamp, distance, circle intersections). `textStyle()` returns a fresh object each call — the original mutated a shared global style object. |
+| `Utilities.js` | Pure helpers (`textStyle` factory, clamp, distance, angleBetween, circle intersections, ringAngles). Zero Phaser import; `textStyle()` returns a fresh object each call — the original mutated a shared global style object. |
 | `Storage.js` | `localStorage` wrapper (unlocks, stars, mute). Every access try/catch-guarded for private-mode browsers. |
 | `Sfx.js` | Procedural WebAudio synth (oscillators + noise buffers). Zero audio assets to load or license; honours persisted mute; resumes the AudioContext on first user gesture. |
 | `GameObjects/AtomView.js` | Shell + nucleus + symbol + free-slot dots; drag entry point; pop/shake tweens. |
@@ -74,17 +74,42 @@ Written on win and on mute toggle; read lazily.
 - **webpack 5** on Node ≥ 16 (the original webpack 4 template fails on modern
   Node with `ERR_OSSL_EVP_UNSUPPORTED`).
 - `npm start` → `webpack serve` on `0.0.0.0:8080` (preview-friendly).
-- `npm run build` → minified `dist/bundle.min.js` + hashed-free stable name,
-  comments stripped, `dist/` gitignored.
+- `npm run build` → minified `dist/bundle.min.js` + relative `publicPath: ""`
+  (works under any GitHub Pages subpath such as `/ChemistryGame-Source/`),
+  comments stripped, `dist/` gitignored on source branches.
 - `npm test` → `tests/run.js`: bundles `tests/testEntry.js` with the project's
-  own webpack config and executes it in headless Chromium (puppeteer-core, no
-  bundled browser download). The suite exercises the **real** `Chem`, `Levels`
-  and `Utilities` modules — 11 assertions.
+  own webpack config, executes it in headless Chromium (`puppeteer-core`) or a
+  sandboxed Node `vm` fallback when no browser binary is installed, and runs
+  integration tests for `scripts/deploy.js` — 15 assertions total.
+- `npm run deploy` → `scripts/deploy.js`: builds `dist/`, prepares GitHub Pages
+  files (`.nojekyll`, `404.html`, optional `CNAME`), commits them inside an
+  isolated temporary Git repository, force-pushes to `refs/heads/gh-pages`
+  without touching the checked-out working branch, and configures/publishes
+  GitHub Pages via the GitHub REST API.
+
+## Deployment pipeline
+
+- **CLI / programmatic (`scripts/deploy.js`)**: zero external npm dependencies.
+  Stages `dist/` into `os.tmpdir()`, pushes to the target branch (`gh-pages` by
+  default), and calls `/repos/{owner}/{repo}/pages` (`GITHUB_TOKEN` or `gh api`)
+  to enable or update GitHub Pages from that branch.
+- **GitHub Actions (`.github/workflows/deploy.yml`)**: triggers on pushes to
+  `main` or manual `workflow_dispatch`, runs `npm ci` → `npm test` →
+  `npm run build` → `node scripts/deploy.js --skip-build`, and writes a build &
+  live-URL summary to `$GITHUB_STEP_SUMMARY`.
+- See [docs/DEPLOYMENT.md](DEPLOYMENT.md) for full CLI flags, environment
+  variables, and GitHub Pages configuration details.
 
 ## Testing strategy
 
-1. **Logic suite** (`npm test`): pure-module assertions in a real browser
-   context (chemistry validity, signatures, components, layout, helpers).
+1. **Logic & deployment suite** (`npm test`):
+   - 12 pure-module assertions over `Chem`, `Levels`, `Constants` and
+     `Utilities` (chemistry validity, signatures, components, layout, geometry
+     and style helpers).
+   - 3 deployment system assertions over `scripts/deploy.js` (CLI/env argument
+     parsing, GitHub remote/Pages URL resolution, and end-to-end branch push to
+     an isolated bare Git repository verifying `.nojekyll`, `404.html`, `CNAME`,
+     `bundle.min.js`, and `index.html` while keeping the working branch intact).
 2. **Manual/E2E recipe**: drive the built bundle with a scripted browser (see
    `tests/run.js` for the launch flags that make headless WebGL work:
    `--use-angle=swiftshader --enable-unsafe-swiftshader`). A full playthrough

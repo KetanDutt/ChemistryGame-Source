@@ -49,3 +49,10 @@ playing, and the help overlay (`H` or the HOW button) is always one key away.
 - All text is DOM-free Phaser text at ≥13 px logical with high contrast.
 - Buttons use hand cursor + hover scale; bonds show pointer cursor on hover.
 - Keyboard shortcuts for restart/help/mute/menu.
+
+## Related documentation
+
+- [README.md](../README.md) — quick start, controls and project overview
+- [docs/ARCHITECTURE.md](ARCHITECTURE.md) — runtime architecture, build tooling and test suite
+- [docs/DEPLOYMENT.md](DEPLOYMENT.md) — branch publishing system and GitHub Pages deployment
+- [docs/CHEMISTRY.md](CHEMISTRY.md) — covalent bonding model and level campaign

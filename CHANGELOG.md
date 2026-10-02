@@ -1,5 +1,42 @@
 # Changelog
 
+## 2.1.0 — GitHub Pages branch deployment & CI/CD (2026-10-02)
+
+Added a complete build-to-branch and GitHub Pages publishing system along with
+expanded automated testing and documentation.
+
+### Deployment & CI/CD
+
+- **Branch publisher (`scripts/deploy.js`)**: zero-dependency CLI and Node
+  module (`npm run deploy` / `npm run deploy:dry`) that builds `dist/`, prepares
+  GitHub Pages artifacts (`.nojekyll`, `404.html` SPA fallback, optional
+  `CNAME`), commits them inside an isolated temporary Git repository in
+  `os.tmpdir()`, force-pushes to `refs/heads/gh-pages` without modifying or
+  switching the working branch, and enables/updates GitHub Pages via the GitHub
+  REST API (`/repos/{owner}/{repo}/pages`).
+- **GitHub Actions workflow (`.github/workflows/deploy.yml`)**: automated
+  pipeline triggered on `main` pushes and manual `workflow_dispatch` (with
+  custom `branch` and `cname` inputs) that runs `npm ci`, `npm test`,
+  `npm run build`, and `node scripts/deploy.js --skip-build`.
+- **Production webpack config (`webpack/prod.js`)**: explicit relative
+  `publicPath: ""` for GitHub Pages project subpaths
+  (`/ChemistryGame-Source/`) and tuned asset size thresholds (`1.5 MB`) for
+  warning-free builds.
+
+### Testing & Documentation
+
+- **Pure `Utilities.js`**: replaced `Phaser.Math` wrappers with standard
+  `Math.hypot` and `Math.atan2`, removing the 7.5 MB Phaser bundle from the
+  unit test bundle (`21.8 KiB`, 20× faster test bundling).
+- **Test runner (`tests/run.js`)**: added a sandboxed Node `vm` fallback when
+  no Chromium binary is installed, plus end-to-end integration tests for
+  `scripts/deploy.js` pushing to an isolated bare Git repository (15 assertions
+  total).
+- **Documentation**: added [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) and
+  updated [`README.md`](README.md), [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md),
+  [`docs/GAMEPLAY.md`](docs/GAMEPLAY.md), and
+  [`docs/CHEMISTRY.md`](docs/CHEMISTRY.md).
+
 ## 2.0.0 — production-ready rewrite (2026-10-02)
 
 Full gameplay/engineering overhaul of the original prototype. Everything below

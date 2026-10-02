@@ -45,3 +45,10 @@ never ship.
   2D and decorative (real VSEPR angles are not enforced).
 - No charges/ions, no resonance, no radicals: the game models stable neutral
   molecules only, which is exactly the school curriculum it targets.
+
+## Related documentation
+
+- [README.md](../README.md) — quick start, controls and project overview
+- [docs/ARCHITECTURE.md](ARCHITECTURE.md) — runtime architecture, build tooling and test suite
+- [docs/DEPLOYMENT.md](DEPLOYMENT.md) — branch publishing system and GitHub Pages deployment
+- [docs/GAMEPLAY.md](GAMEPLAY.md) — rules, scoring and UX decisions
