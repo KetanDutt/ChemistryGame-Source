@@ -9,5 +9,7 @@ Thumbs.db
 # Vendors
 node_modules/
 
-# Build
+# Build output
+dist/
+dist-test/
 /npm-debug.log

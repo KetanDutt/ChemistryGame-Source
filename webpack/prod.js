@@ -1,27 +1,47 @@
-const merge = require("webpack-merge");
 const path = require("path");
-const base = require("./base");
-const TerserPlugin = require("terser-webpack-plugin");
 
-module.exports = merge(base, {
+module.exports = {
   mode: "production",
-  output: {
-    filename: "bundle.min.js"
-  },
   devtool: false,
-  performance: {
-    maxEntrypointSize: 900000,
-    maxAssetSize: 900000
+  entry: "./src/index.js",
+  output: {
+    path: path.resolve(__dirname, "../dist"),
+    filename: "bundle.min.js",
+    clean: true
   },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader"
+        }
+      }
+    ]
+  },
+  plugins: [
+    new (require("html-webpack-plugin"))({
+      template: "./index.html",
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true
+      }
+    })
+  ],
   optimization: {
+    minimize: true,
     minimizer: [
-      new TerserPlugin({
+      new (require("terser-webpack-plugin"))({
+        extractComments: false,
         terserOptions: {
-          output: {
-            comments: false
-          }
+          format: { comments: false }
         }
       })
     ]
+  },
+  performance: {
+    maxEntrypointSize: 1200000,
+    maxAssetSize: 1200000
   }
-});
+};
